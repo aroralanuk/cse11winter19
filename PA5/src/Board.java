@@ -27,33 +27,38 @@ public class Board {
      */
     public Board(int size) {
         GRID_SIZE = size;
-
+        score = 0;
+        grid = new char[GRID_SIZE][GRID_SIZE];
+        visited = new boolean[GRID_SIZE][GRID_SIZE];
+        pacman = new PacCharacter(GRID_SIZE/2,GRID_SIZE/2,'P');
+        ghosts = new PacCharacter[4];
+        ghosts[0] = new PacCharacter(0,0,'G');
+        ghosts[1] = new PacCharacter(0,GRID_SIZE-1,'G');
+        ghosts[2] = new PacCharacter(GRID_SIZE-1,0,'G');
+        ghosts[3] = new PacCharacter(GRID_SIZE-1,GRID_SIZE-1,'G');
+        setVisited(GRID_SIZE/2, GRID_SIZE/2);
     }
 
 
     public void setVisited(int x, int y) {
+        if (x < 0 || y < 0 || x >= GRID_SIZE || y > GRID_SIZE){
+            return;
+        }
         visited[x][y]=true;
     }
 
     public void refreshGrid() {
+        grid[pacman.getRow()][pacman.getCol()] = pacman.getAppearance();
+        for (PacCharacter ghost : ghosts) {
+            grid[ghost.getRow()][ghost.getCol()] = ghost.getAppearance();
+        }
         for(int i=0;i<grid.length;i++){
             for(int j=0;i<grid[i].length;i++){
-                if(i==pacman.getRow() && j==pacman.getCol()){
-                    grid[i][j]=pacman.getAppearance();
-                }
-                else if(true){
-                    for(int k=0;k<4;k++){
-                        if(i==ghosts[k].getRow() && j==ghosts[k].getCol()){
-                            grid[i][j]=ghosts[k].getAppearance();
-                            break;
-                        }
-                    }
-                }
-                else if(visited[i][j]){
-                    grid[i][j]="*";
+                if(!visited[i][j]){
+                    grid[i][j]='*';
                 }
                 else{
-                    grid[i][j]=" ";
+                    grid[i][j]=' ';
                 }
             }
         }
@@ -71,7 +76,17 @@ public class Board {
 
 
     public void move(Direction direction) {
-        // TODO
+        int row = pacman.getRow() + direction.getX();
+        int col = pacman.getCol() + direction.getY();
+        pacman.setPosition(row, col);
+        if(!visited[row][col]){
+            score+=10;
+            visited[row][col]=true;
+        }
+        for (PacCharacter ghost: ghosts) {
+            ghostMove(ghost);
+        }
+        refreshGrid();
     }
 
 
@@ -86,7 +101,17 @@ public class Board {
 
     // Monster always move towards Pac-man
     public Direction ghostMove(PacCharacter ghost) {
-        // TODO
+        if(ghost.getRow()==pacman.getRow() && ghost.getCol()==pacman.getCol()){
+            return Direction.STAY;
+        }
+        int possX = ghost.getRow() - pacman.getRow();
+        int possY = ghost.getCol() - pacman.getCol();
+        if(possY>=possX){
+            return (possX>0)? Direction.UP: Direction.DOWN;
+        }
+        else{
+            return (possY>0)? Direction.LEFT: Direction.RIGHT;
+        }
     }
 
 
@@ -94,9 +119,9 @@ public class Board {
 
         StringBuilder outputString = new StringBuilder();
         outputString.append(String.format("Score: %d\n", this.score));
-        for(char row:grid){
+        for(char[] row:grid){
             for(char spot:row){
-                outputString.append(" " + grid[i][j]);
+                outputString.append(" " + spot);
             }
             outputString.append("\n");
         }

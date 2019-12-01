@@ -12,23 +12,23 @@ public class GamePacman {
         processArgs(args);
 
         System.out.println("Welcome to Pac-Man!");
-        
+
         board = new Board( boardSize );
-        
+
         // print initial board
         System.out.println(board);
 
         // Examples on how to move the Pac-Man in main.
         if ( board.canMove(Direction.UP) ) {
-                board.move(Direction.UP);
+            board.move(Direction.UP);
         } // If cannot move, don't change anything.
         System.out.println(board);
         if ( board.isGameOver() ) {
             System.out.println("Game Over!");
         }
-
+        System.out.println(board);
         if ( board.canMove(Direction.LEFT) ) {
-                board.move(Direction.LEFT);
+            board.move(Direction.LEFT);
         } // If cannot move, don't change anything.
         System.out.println(board);
         if ( board.isGameOver() ) {
@@ -36,7 +36,7 @@ public class GamePacman {
         }
 
         if ( board.canMove(Direction.DOWN) ) {
-                board.move(Direction.DOWN);
+            board.move(Direction.DOWN);
         } // If cannot move, don't change anything.
         System.out.println(board);
         if ( board.isGameOver() ) {
@@ -44,7 +44,7 @@ public class GamePacman {
         }
 
         if ( board.canMove(Direction.RIGHT) ) {
-                board.move(Direction.RIGHT);
+            board.move(Direction.RIGHT);
         } // If cannot move, don't change anything.
         System.out.println(board);
         if ( board.isGameOver() ) {
